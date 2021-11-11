@@ -1,0 +1,14 @@
+{
+    "TableName": "animal-table",
+    "AttributeDefinitions": [{ "AttributeName": "ID", "AttributeType": "S" }],
+    "KeySchema": [
+      {
+        "AttributeName": "ID",
+        "KeyType": "HASH"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 5,
+      "WriteCapacityUnits": 5
+    }
+  }

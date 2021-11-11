@@ -1,0 +1,29 @@
+## DynamoDB
+- List Tables: 
+    aws --endpoint-url http://localhost:4566/ dynamodb list-tables
+- Create table:
+    aws --endpoint-url http://localhost:4566/ dynamodb create-table --cli-input-json file:///Users/DAC/go/src/s3-dowload/dynamodb.json
+- Decribe Table: 
+    aws --endpoint-url http://localhost:4566/ dynamodb describe-table --table-name animal-table
+- Adding Item: 
+    aws --endpoint-url http://localhost:4566/ dynamodb put-item --table-name animal-table --item '{\"ID\": {\"S\": \"a001\"}, \"AnimalName\":{\"S\"😕"Lion\"}}'
+- Scan Items: 
+    aws --endpoint-url http://localhost:4566/ dynamodb scan --table-name animal-table
+- Select Item: 
+    aws --endpoint-url http://localhost:4566/ dynamodb get-item --table-name animal-table  --key '{ \"ID\": {\"S\": \"a001\" }  }'
+- Delete Item: 
+    aws --endpoint-url http://localhost:4566/ dynamodb delete-item --table-name animal-table  --key '{ \"ID\": {\"S\": \"a001\" }  }'
+- Delete Table: 
+    aws --endpoint-url http://localhost:4566/ dynamodb delete-table --table-name animal-table
+
+## SQS 
+- Create queue:
+    aws --endpoint-url http://localhost:4566/ sqs create-queue --queue-name mymessage-queue
+- Delete queue: 
+    aws --endpoint-url http://localhost:4566/ sqs delete-queue --queue-url http://localhost:4566/000000000000/mymessage-queue
+- List queues: 
+    aws --endpoint-url http://localhost:4566/ sqs list-queues
+- Send message: 
+    aws --endpoint-url http://localhost:4566/ sqs send-message --queue-url http://localhost:4566/000000000000/mymessage-queue --message-body "Hello, Minor"
+- Receive message:
+    aws --endpoint-url http://localhost:4566/ sqs receive-message --queue-url http://localhost:4566/000000000000/mymessage-queue
