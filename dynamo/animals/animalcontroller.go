@@ -126,6 +126,6 @@ func DeleteItem(db *dynamodb.DynamoDB ,animalKey string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("[DeleteItem] Deleted Item with key \"%s\"", animalKey)
+	fmt.Printf("[DeleteItem] Deleted Item with key \"%s\"\n", animalKey)
 	return nil
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 
@@ -9,6 +8,7 @@ import (
 	"golang_aws/entity"
 	"golang_aws/helper"
 	"golang_aws/dynamo/animals"
+	"golang_aws/storage"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	ENDPOINT = "http://localhost:4566/"
-	REGION   = "us-east-1"
+	ENDPOINT    = "http://localhost:4566/"
+	REGION      = "us-east-1"
 )
 
 var (
@@ -38,12 +38,10 @@ func init() {
 		log.Fatal("[NewSession Error] Can't create new session.")
 	}
 	// Create S3 service client
-	s3Cli, err = NewSimpleStorageService(sess)
-
+	s3Cli, err = storage.NewSimpleStorageService(sess)
 	if err !=nil {
 		log.Fatal(err)
 	}
-
 	fmt.Println("Session is working at ", s3Cli.Endpoint)
 
 	// Create DynamoDB service 
@@ -53,22 +51,14 @@ func init() {
 	}
 }
 
-func NewSimpleStorageService(s *session.Session) (*s3.S3, error) {
-	if s == nil {
-		return nil, errors.New("[NewSimpleStorageServie] Session is nil")
-	}
-	
-	return s3.New(s), nil
-}
-
 func main() {
-	// Create table 
+	//Create table 
 	err := animals.CreateTable(dynamoDB)
 	if err != nil {
 		log.Fatalf("[CreateTable Error] %v", err)
 	}
 
-	// PutItem 
+	//PutItem 
 	newAnimal := entity.Animal{
 		CommonName		: "Secretary Bird",
 		ScientificName	: "Sagittarius serpentarius",
@@ -83,7 +73,7 @@ func main() {
 		log.Fatalf("[PutItem Error] %v", err)
 	}
 
-	// UpdateItem
+	//UpdateItem
 	updateItem := entity.Animal{
 		CommonName		: "Secretary Bird",
 		ScientificName	: "Sagittarius serpentarius",
@@ -98,7 +88,7 @@ func main() {
 		log.Fatalf("[UpdateItem Error]  %v", err)
 	}
 
-	// GetItem
+	//GetItem
 	commonNameRequest := "Secretary Bird"
 	animalItem, err := animals.GetItem(dynamoDB, commonNameRequest)
 	if err != nil {
@@ -112,4 +102,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("[DeleteItem Error] \n%v\n", err)
 	}
+
+	//CreateBucket
+	err = storage.CreateBucket(s3Cli)
+	if err != nil {
+		log.Fatalf("[CreateBucket Error] %v", err)
+	}
+
+	//ListBuckets
+	listBuckets, err := storage.ListBuckets(s3Cli)
+	if err != nil {
+		log.Fatalf("[ListBuckets Error] %v", err)
+	}
+	fmt.Printf("[ListBuckets] \n%s\n", helper.FormatStruct(listBuckets.Buckets))
 }
