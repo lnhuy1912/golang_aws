@@ -1,0 +1,7 @@
+COMMON NAME: Great White Shark
+SCIENTIFIC NAME: Carcharodon carcharias
+TYPE: Fish
+DIET: Carnivore
+GROUP NAME: School, shoal
+SIZE: 15 feet to more than 20 feet
+WEIGHT: 2.9 tons or more

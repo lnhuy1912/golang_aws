@@ -3,6 +3,7 @@ package animals
 import (
 	"fmt"
 
+	"golang_aws/queue"
 	"golang_aws/entity"
 	"golang_aws/helper"
 	"github.com/aws/aws-sdk-go/aws"
@@ -35,7 +36,8 @@ func CreateTable(db *dynamodb.DynamoDB) error {
 		return err
 	}
 
-	fmt.Println("[CreateTable] Created a table: \n", result)
+	//Put message in queue
+	result.String()
 	return nil
 }
 

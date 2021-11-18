@@ -20,10 +20,20 @@
 - Create queue:
     aws --endpoint-url http://localhost:4566/ sqs create-queue --queue-name mymessage-queue
 - Delete queue: 
-    aws --endpoint-url http://localhost:4566/ sqs delete-queue --queue-url http://localhost:4566/000000000000/mymessage-queue
+    aws --endpoint-url http://localhost:4566/ sqs delete-queue --queue-url http://localhost:4566/000000000000/animals-queue
 - List queues: 
     aws --endpoint-url http://localhost:4566/ sqs list-queues
 - Send message: 
-    aws --endpoint-url http://localhost:4566/ sqs send-message --queue-url http://localhost:4566/000000000000/mymessage-queue --message-body "Hello, Minor"
+    aws --endpoint-url http://localhost:4566/ sqs send-message --queue-url http://localhost:4566/000000000000/animals-queue --message-body "Hello, Minor"
 - Receive message:
-    aws --endpoint-url http://localhost:4566/ sqs receive-message --queue-url http://localhost:4566/000000000000/mymessage-queue
+    aws --endpoint-url http://localhost:4566/ sqs receive-message --queue-url http://localhost:4566/000000000000/animals-queue
+
+## S3 
+- Create Bucket:
+    aws --endpoint-url http://localhost:4566/ s3api create-bucket --bucket-name animals
+- List Bucket:
+    aws --endpoint-url http://localhost:4566/ s3api list-buckets
+- Delete Bucket: 
+    aws --endpoint-url http://localhost:4566/ s3api delete-bucket --bucket animals
+- List Object in Bucket:
+    aws --endpoint-url http://localhost:4566/ s3 ls s3://animals

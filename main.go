@@ -2,19 +2,22 @@ package main
 
 import (
 	"fmt"
+	// "io/ioutil"
 	"log"
 
 	"golang_aws/dynamo"
 	"golang_aws/entity"
 	"golang_aws/helper"
 	"golang_aws/dynamo/animals"
+	"golang_aws/queue"
 	"golang_aws/storage"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
 const (
@@ -25,6 +28,7 @@ const (
 var (
 	s3Cli *s3.S3
 	dynamoDB *dynamodb.DynamoDB
+	sqsCli *sqs.SQS
 )
 
 func init() {
@@ -32,6 +36,7 @@ func init() {
 	sess, err := session.NewSession(&aws.Config{
 		Region		: aws.String(REGION),
 		Credentials	: credentials.NewStaticCredentials("test", "test", ""),
+		S3ForcePathStyle: aws.Bool(true),
 		Endpoint	: aws.String(ENDPOINT),
 	})
 	if err != nil {
@@ -44,10 +49,16 @@ func init() {
 	}
 	fmt.Println("Session is working at ", s3Cli.Endpoint)
 
-	// Create DynamoDB service 
+	// Create DynamoDB service client
 	dynamoDB, err = dynamo.NewDynamoDB(sess)
 	if err != nil {
 		log.Fatalf("[NewDynamoDB Error] %v", err)
+	}
+
+	// Create SQS Service client
+	sqsCli, err = queue.NewSQSService(sess)
+	if err != nil {
+		log.Fatalf("[NewSQSService] %v", err)
 	}
 }
 
@@ -104,15 +115,66 @@ func main() {
 	}
 
 	//CreateBucket
-	err = storage.CreateBucket(s3Cli)
-	if err != nil {
-		log.Fatalf("[CreateBucket Error] %v", err)
-	}
+	// err := storage.CreateBucket(s3Cli)
+	// if err != nil {
+	// 	log.Fatalf("[CreateBucket Error] %v", err)
+	// }
 
-	//ListBuckets
-	listBuckets, err := storage.ListBuckets(s3Cli)
-	if err != nil {
-		log.Fatalf("[ListBuckets Error] %v", err)
-	}
-	fmt.Printf("[ListBuckets] \n%s\n", helper.FormatStruct(listBuckets.Buckets))
+	// ListBuckets
+	// listBuckets, err := storage.ListBuckets(s3Cli)
+	// if err != nil {
+	// 	log.Fatalf("[ListBuckets Error] %v", err)
+	// }
+	// fmt.Printf("[ListBuckets] \n%s\n", helper.FormatStruct(listBuckets.Buckets))
+	
+	// //UploadObjects
+	// folder := "files"
+	// files, err := ioutil.ReadDir(folder)
+	// if err != nil {
+	// 	log.Fatalf("[UploadObject Error] %v", err)
+	// }
+	// for _, file := range files {
+	// 	if file.IsDir(){
+	// 		continue
+	// 	} else {
+	// 		err = storage.UploadObjects(s3Cli, folder + "/" + file.Name())
+	// 		if err != nil {
+	// 			log.Fatalf("[UploadObject Error] %v", err)
+	// 		}
+	// 	}
+	// }
+
+	// //ListObjects
+	// listObjects, err := storage.ListObjects(s3Cli)
+	// if err != nil {
+	// 	log.Fatalf("[ListObjects Error] %v", err)
+	// }
+	// fmt.Printf("[LitsObjects] \n%s\n", helper.FormatStruct(listObjects))
+	
+	// //GetObjects
+	// for _, object := range listObjects.Contents {
+	// 	err = storage.GetObject(s3Cli, *object.Key)
+	// 	if err != nil {
+	// 		log.Fatalf("[GetObject Error] %v", err)
+	// 	}
+	// }
+	
+	//CreateQueue
+	// queueUrl, err := queue.CreateQueue(sqsCli)
+	// if err != nil {
+	// 	log.Fatalf("[CreateQueue Error] %v", err)
+	// }
+
+	// //SendMessage
+	// messageBody := "There's a animal information about ambious that It had added."
+	// err = queue.SendMessage(sqsCli, messageBody, queueUrl)
+	// if err != nil {
+	// 	log.Fatalf("[SendMessage Error] %v", err)
+	// }
+
+	// //ReceiveMessage
+	// err = queue.ReceiveMessage(sqsCli, queueUrl)
+	// if err != nil {
+	// 	// log.Fatalf("[ReceiveMessage Error] %v", err)
+	// }
 }
